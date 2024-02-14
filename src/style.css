@@ -1,0 +1,64 @@
+@import url("code-theme-light.css") (prefers-color-scheme: light);
+@import url("code-theme-dark.css") (prefers-color-scheme: dark);
+
+body {
+  font-family: Helvetica, sans-serif;
+  padding-left: 1em;
+  padding-right: 1em;
+  max-width: 50em;
+  margin: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #333;
+        color: white;
+    }
+
+    a {
+        color: #B3C0A4;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    body {
+        background: white;
+        color: #555;
+    }
+    a {
+        color: #073B4C;
+    }
+}
+
+pre.code {
+    font-size: 1rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+}
+
+th {
+    text-align: start;
+}
+
+hr {
+  color: gray;
+  width: 100%;
+}
+
+footer {
+    color: #666;
+    padding-bottom: 1em;
+}
+
+.footnote {
+    font-size: 0.85em;
+}
+
+.copyright {
+    float: right;
+}

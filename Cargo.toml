@@ -1,0 +1,13 @@
+[package]
+name = "kblog"
+version = "0.1.0"
+authors = ["Kurtis Nusbaum <kcommiter@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+pulldown-cmark = { version = "0.9", default-features = false, features = ["simd"] }
+clap = { version = "4.0.32", features = ["derive"] }
+anyhow = "1.0"
+syntect = "5.0"
+chrono = "0.4"
+atom_syndication = "0.11"
