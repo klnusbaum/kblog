@@ -15,10 +15,19 @@ pub struct FeedCreator {
     now: FixedDateTime,
     domain: String,
     blog_name: String,
+    blog_subtitle: String,
+    author: String,
 }
 
 impl FeedCreator {
-    pub fn new<P, D>(out_dir: P, now: D, domain: String, blog_name: String) -> FeedCreator
+    pub fn new<P, D>(
+        out_dir: P,
+        now: D,
+        domain: String,
+        blog_name: String,
+        blog_subtitle: String,
+        author: String,
+    ) -> FeedCreator
     where
         P: AsRef<Path>,
         D: Into<FixedDateTime>,
@@ -30,6 +39,8 @@ impl FeedCreator {
             now,
             domain,
             blog_name,
+            blog_subtitle,
+            author,
         }
     }
 
@@ -48,7 +59,7 @@ impl FeedCreator {
             .subtitle(self.feed_subtitle())
             .updated(latest_update)
             .links(self.feed_links())
-            .author(self.kurtis())
+            .author(self.author())
             .rights(self.rights())
             .entries(entries)
             .build()
@@ -65,7 +76,7 @@ impl FeedCreator {
     }
 
     fn feed_subtitle(&self) -> Text {
-        plain_text("The Blog of Kurtis Nusbaum")
+        plain_text(&self.blog_subtitle)
     }
 
     fn feed_links(&self) -> Vec<Link> {
@@ -93,7 +104,7 @@ impl FeedCreator {
             .published(post.date)
             .updated(post.date)
             .link(self.entry_link(post))
-            .author(self.kurtis())
+            .author(self.author())
             .build()
     }
 
@@ -115,12 +126,12 @@ impl FeedCreator {
     }
 
     fn rights(&self) -> Text {
-        plain_text(&format!("© {} Kurtis Nusbaum", self.now.year()))
+        plain_text(&format!("© {} {}", self.now.year(), self.author))
     }
 
-    fn kurtis(&self) -> Person {
+    fn author(&self) -> Person {
         PersonBuilder::default()
-            .name("Kurtis Nusbaum")
+            .name(&self.author)
             .uri(format!("https://{}/", self.domain))
             .build()
     }

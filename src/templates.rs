@@ -11,6 +11,8 @@ pub const TOKEN_RSS_FEED: &'static str = "{{feed_file}}";
 pub const TOKEN_YEAR: &'static str = "{{year}}";
 pub const TOKEN_URL: &'static str = "{{url}}";
 pub const TOKEN_OG_TYPE: &'static str = "{{og_type}}";
+pub const TOKEN_AUTHOR: &'static str = "{{author}}";
+pub const TOKEN_BLOG_SUBTITLE: &'static str = "{{blog_subtitle}}";
 
 pub const PAGE_TEMPLATE: &'static str = r#"<!DOCTYPE html>
 <html lang="en">
@@ -30,7 +32,7 @@ pub const PAGE_TEMPLATE: &'static str = r#"<!DOCTYPE html>
 {{body}}
 <hr>
 <footer>
-<a href="/">Home</a> | <a href="https://github.com/klnusbaum/">GitHub</a> | <a href="/{{feed_file}}">RSS</a><span class="copyright">© {{year}} Kurtis Nusbaum</span>
+<a href="/">Home</a> | <a href="https://github.com/klnusbaum/">GitHub</a> | <a href="/{{feed_file}}">RSS</a><span class="copyright">© {{year}} {{author}}</span>
 </footer>
 
 <!-- Google tag (gtag.js) -->
@@ -59,7 +61,7 @@ pub const DRAFT_TEMPLATE: &str = r#"<main>
 
 pub const INDEX_TEMPLATE: &str = r#"<header>
 <h1>{{blog_name}}</h1>
-<p>The web log of Kurtis Nusbaum</p>
+<p>{{blog_subtitle}}</p>
 </header>
 <br/>
 <main>

@@ -46,6 +46,8 @@ fn main() -> Result<()> {
         now,
         config.domain.clone(),
         config.blog_name.clone(),
+        config.blog_subtitle.clone(),
+        config.author.clone(),
     );
     let renderer = Renderer::new(
         args.in_dir,
@@ -55,6 +57,8 @@ fn main() -> Result<()> {
         feed_creator,
         config.domain.clone(),
         config.blog_name.clone(),
+        config.blog_subtitle.clone(),
+        config.author,
         year,
         env_or_default("ANALYTICS_TAG", "dev_tag"),
     );

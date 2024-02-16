@@ -7,6 +7,8 @@ use std::path::PathBuf;
 pub struct Config {
     pub domain: String,
     pub blog_name: String,
+    pub blog_subtitle: String,
+    pub author: String,
 }
 
 impl Config {

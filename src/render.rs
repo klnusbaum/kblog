@@ -22,6 +22,8 @@ pub struct Renderer {
     feed_creator: FeedCreator,
     domain: String,
     blog_name: String,
+    blog_subtitle: String,
+    author: String,
     year: String,
     analytics_tag: String,
 }
@@ -35,6 +37,8 @@ impl Renderer {
         feed_creator: FeedCreator,
         domain: String,
         blog_name: String,
+        blog_subtitle: String,
+        author: String,
         year: String,
         analytics_tag: String,
     ) -> Renderer {
@@ -53,6 +57,8 @@ impl Renderer {
             feed_creator,
             domain,
             blog_name,
+            blog_subtitle,
+            author,
             year,
             analytics_tag,
         }
@@ -166,7 +172,8 @@ impl Renderer {
             .collect();
         let index = templates::INDEX_TEMPLATE
             .replace(templates::TOKEN_POST_LIST, &list)
-            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name);
+            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name)
+            .replace(templates::TOKEN_BLOG_SUBTITLE, &self.blog_subtitle);
         self.render_page(
             &self.out_dir.join("index.html"),
             &self.blog_name,
@@ -185,6 +192,7 @@ impl Renderer {
         og_type: &str,
     ) -> Result<()> {
         let rendered_page = templates::PAGE_TEMPLATE
+            .replace(templates::TOKEN_AUTHOR, &self.author)
             .replace(templates::TOKEN_DOMAIN, &self.domain)
             .replace(templates::TOKEN_BLOG_NAME, &self.blog_name)
             .replace(templates::TOKEN_STYLES, css::STYLE_FILE)
