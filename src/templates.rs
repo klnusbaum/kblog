@@ -1,3 +1,5 @@
+pub const TOKEN_DOMAIN: &'static str = "{{domain}}";
+pub const TOKEN_BLOG_NAME: &'static str = "{{blog_name}}";
 pub const TOKEN_STYLES: &'static str = "{{style}}";
 pub const TOKEN_BODY: &'static str = "{{body}}";
 pub const TOKEN_TITLE: &'static str = "{{title}}";
@@ -19,7 +21,7 @@ pub const PAGE_TEMPLATE: &'static str = r#"<!DOCTYPE html>
 <meta property="og:title" content="{{title}}">
 <meta property="og:type" content="{{og_type}}">
 <meta property="og:url" content="{{url}}">
-<meta property="og:site_name" content="knusbaum.org">
+<meta property="og:site_name" content="{{blog_name}}">
 
 <link href="/{{feed_file}}" type="application/atom+xml" rel="alternate" title="Sitewide Atom feed" />
 <title>{{title}}</title>
@@ -56,7 +58,7 @@ pub const DRAFT_TEMPLATE: &str = r#"<main>
 "#;
 
 pub const INDEX_TEMPLATE: &str = r#"<header>
-<h1>knusbaum.org</h1>
+<h1>{{blog_name}}</h1>
 <p>The web log of Kurtis Nusbaum</p>
 </header>
 <br/>

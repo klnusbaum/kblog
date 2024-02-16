@@ -20,6 +20,8 @@ pub struct Renderer {
     markdowner: Markdowner,
     css_creator: CSSCreator,
     feed_creator: FeedCreator,
+    domain: String,
+    blog_name: String,
     year: String,
     analytics_tag: String,
 }
@@ -31,6 +33,8 @@ impl Renderer {
         markdowner: Markdowner,
         css_creator: CSSCreator,
         feed_creator: FeedCreator,
+        domain: String,
+        blog_name: String,
         year: String,
         analytics_tag: String,
     ) -> Renderer {
@@ -47,6 +51,8 @@ impl Renderer {
             markdowner,
             css_creator,
             feed_creator,
+            domain,
+            blog_name,
             year,
             analytics_tag,
         }
@@ -125,7 +131,7 @@ impl Renderer {
             &post_dir.join("index.html"),
             &post.title,
             &rendered_post,
-            &post_dir.to_og_url()?,
+            &self.to_og_url(post_dir)?,
             OG_TYPE_ARTICLE,
         )
     }
@@ -141,7 +147,7 @@ impl Renderer {
             &draft_dir.join("index.html"),
             &draft.title,
             &rendered_draft,
-            &draft_dir.to_og_url()?,
+            &self.to_og_url(draft_dir)?,
             OG_TYPE_ARTICLE,
         )
     }
@@ -158,12 +164,14 @@ impl Renderer {
                 )
             })
             .collect();
-        let index = templates::INDEX_TEMPLATE.replace(templates::TOKEN_POST_LIST, &list);
+        let index = templates::INDEX_TEMPLATE
+            .replace(templates::TOKEN_POST_LIST, &list)
+            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name);
         self.render_page(
             &self.out_dir.join("index.html"),
-            "knusbaum.org",
+            &self.blog_name,
             &index,
-            "https://knusbaum.org/",
+            format!("https://{}/", &self.domain).as_str(),
             OG_TYPE_WEBSITE,
         )
     }
@@ -177,6 +185,8 @@ impl Renderer {
         og_type: &str,
     ) -> Result<()> {
         let rendered_page = templates::PAGE_TEMPLATE
+            .replace(templates::TOKEN_DOMAIN, &self.domain)
+            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name)
             .replace(templates::TOKEN_STYLES, css::STYLE_FILE)
             .replace(templates::TOKEN_RSS_FEED, feed::FEED_FILE)
             .replace(templates::TOKEN_TITLE, title)
@@ -195,6 +205,13 @@ impl Renderer {
     fn render_feed(&self, posts: &[Post]) -> Result<()> {
         self.feed_creator.render_feed(posts)
     }
+
+    fn to_og_url(&self, path: PathBuf) -> Result<String> {
+        let url_path = path
+            .to_str()
+            .ok_or(anyhow!("Non utf8 file name {}", path.display()))?;
+        Ok(format!("https://{}/{}", self.domain, url_path))
+    }
 }
 
 fn missing_posts_dir(path: &Path) -> Error {
@@ -202,17 +219,4 @@ fn missing_posts_dir(path: &Path) -> Error {
         "\"posts\" directory not found. expected at {}",
         path.display()
     )
-}
-
-trait ToOgUrl {
-    fn to_og_url(&self) -> Result<String>;
-}
-
-impl ToOgUrl for PathBuf {
-    fn to_og_url(&self) -> Result<String> {
-        let url_path = self
-            .to_str()
-            .ok_or(anyhow!("Non utf8 file name {}", self.display()))?;
-        Ok(format!("https://knusbaum.org/{}", url_path))
-    }
 }

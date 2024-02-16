@@ -13,17 +13,24 @@ pub const FEED_FILE: &'static str = "atom.xml";
 pub struct FeedCreator {
     feed_file: PathBuf,
     now: FixedDateTime,
+    domain: String,
+    blog_name: String,
 }
 
 impl FeedCreator {
-    pub fn new<P, D>(out_dir: P, now: D) -> FeedCreator
+    pub fn new<P, D>(out_dir: P, now: D, domain: String, blog_name: String) -> FeedCreator
     where
         P: AsRef<Path>,
         D: Into<FixedDateTime>,
     {
         let feed_file = out_dir.as_ref().join(FEED_FILE);
         let now = now.into();
-        FeedCreator { feed_file, now }
+        FeedCreator {
+            feed_file,
+            now,
+            domain,
+            blog_name,
+        }
     }
 
     pub fn render_feed(&self, posts: &[Post]) -> Result<()> {
@@ -32,18 +39,17 @@ impl FeedCreator {
     }
 
     fn create_feed(&self, posts: &[Post]) -> Feed {
-        let entries = create_entries(&posts);
+        let entries = self.create_entries(&posts);
         let latest_update = entries.latest_update(self.now);
-        let rights = rights(&self.now);
 
         FeedBuilder::default()
-            .id("tag:knusbaum.org")
-            .title(feed_title())
-            .subtitle(feed_subtitle())
+            .id(format!("tag:{}", self.domain))
+            .title(self.feed_title())
+            .subtitle(self.feed_subtitle())
             .updated(latest_update)
-            .links(feed_links())
-            .author(kurtis())
-            .rights(rights)
+            .links(self.feed_links())
+            .author(self.kurtis())
+            .rights(self.rights())
             .entries(entries)
             .build()
     }
@@ -53,70 +59,71 @@ impl FeedCreator {
         feed.write_to(file)?;
         Ok(())
     }
-}
 
-fn feed_title() -> Text {
-    plain_text("knusbaum.org")
-}
+    fn feed_title(&self) -> Text {
+        plain_text(&self.blog_name)
+    }
 
-fn feed_subtitle() -> Text {
-    plain_text("The Blog of Kurtis Nusbaum")
-}
+    fn feed_subtitle(&self) -> Text {
+        plain_text("The Blog of Kurtis Nusbaum")
+    }
 
-fn feed_links() -> Vec<Link> {
-    let self_link = LinkBuilder::default()
-        .href(format!("https://knusbaum.org/{}", FEED_FILE))
-        .rel("self")
-        .mime_type("application/atom+xml".to_string())
-        .build();
-    let alt_link = LinkBuilder::default()
-        .href("https://knusbaum.org/")
-        .rel("alternate")
-        .mime_type("text/html".to_string())
-        .build();
-    vec![self_link, alt_link]
-}
+    fn feed_links(&self) -> Vec<Link> {
+        let self_link = LinkBuilder::default()
+            .href(format!("https://{}/{}", &self.domain, FEED_FILE))
+            .rel("self")
+            .mime_type("application/atom+xml".to_string())
+            .build();
+        let alt_link = LinkBuilder::default()
+            .href(format!("https://{}/", self.domain))
+            .rel("alternate")
+            .mime_type("text/html".to_string())
+            .build();
+        vec![self_link, alt_link]
+    }
 
-fn create_entries(posts: &[Post]) -> Vec<Entry> {
-    posts.iter().map(|p| create_entry(p)).collect()
-}
+    fn create_entries(&self, posts: &[Post]) -> Vec<Entry> {
+        posts.iter().map(|p| self.create_entry(p)).collect()
+    }
 
-fn create_entry(post: &Post) -> Entry {
-    EntryBuilder::default()
-        .id(entry_id(post))
-        .title(plain_text(&post.title))
-        .published(post.date)
-        .updated(post.date)
-        .link(entry_link(post))
-        .author(kurtis())
-        .build()
-}
+    fn create_entry(&self, post: &Post) -> Entry {
+        EntryBuilder::default()
+            .id(self.entry_id(post))
+            .title(plain_text(&post.title))
+            .published(post.date)
+            .updated(post.date)
+            .link(self.entry_link(post))
+            .author(self.kurtis())
+            .build()
+    }
 
-fn entry_id(post: &Post) -> String {
-    format!(
-        "tag:knusbaum.org,{}:{}",
-        post.date.format("%Y-%m-%d"),
-        post.id
-    )
-}
+    fn entry_id(&self, post: &Post) -> String {
+        format!(
+            "tag:{},{}:{}",
+            self.domain,
+            post.date.format("%Y-%m-%d"),
+            post.id
+        )
+    }
 
-fn entry_link(post: &Post) -> Link {
-    LinkBuilder::default()
-        .href(format!("https://knusbaum.org/posts/{}", post.id))
-        .rel("alternate")
-        .mime_type("text/html".to_string())
-        .build()
-}
+    fn entry_link(&self, post: &Post) -> Link {
+        LinkBuilder::default()
+            .href(format!("https://{}/posts/{}", self.domain, post.id))
+            .rel("alternate")
+            .mime_type("text/html".to_string())
+            .build()
+    }
 
-fn rights(now: &FixedDateTime) -> Text {
-    plain_text(&format!("© {} Kurtis Nusbaum", now.year()))
-}
+    fn rights(&self) -> Text {
+        plain_text(&format!("© {} Kurtis Nusbaum", self.now.year()))
+    }
 
-fn kurtis() -> Person {
-    PersonBuilder::default()
-        .name("Kurtis Nusbaum")
-        .uri("https://knusbaum.org".to_string())
-        .build()
+    fn kurtis(&self) -> Person {
+        PersonBuilder::default()
+            .name("Kurtis Nusbaum")
+            .uri(format!("https://{}/", self.domain))
+            .build()
+    }
 }
 
 fn plain_text(text: &str) -> Text {
