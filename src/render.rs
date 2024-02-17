@@ -137,7 +137,7 @@ impl Renderer {
             &post_dir.join("index.html"),
             &post.title,
             &rendered_post,
-            &self.to_og_url(post_dir)?,
+            &self.to_og_url(&format!("posts/{}", post.id))?,
             OG_TYPE_ARTICLE,
         )
     }
@@ -153,7 +153,7 @@ impl Renderer {
             &draft_dir.join("index.html"),
             &draft.title,
             &rendered_draft,
-            &self.to_og_url(draft_dir)?,
+            &format!("drafts/{}", draft.id),
             OG_TYPE_ARTICLE,
         )
     }
@@ -214,11 +214,8 @@ impl Renderer {
         self.feed_creator.render_feed(posts)
     }
 
-    fn to_og_url(&self, path: PathBuf) -> Result<String> {
-        let url_path = path
-            .to_str()
-            .ok_or(anyhow!("Non utf8 file name {}", path.display()))?;
-        Ok(format!("https://{}/{}", self.domain, url_path))
+    fn to_og_url(&self, path: &str) -> Result<String> {
+        Ok(format!("https://{}/{}", self.domain, path))
     }
 }
 
