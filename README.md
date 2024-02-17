@@ -1,5 +1,6 @@
 # kblog
-A static site generated for blogs
+A static site generated for blogs written in Rust.
+Used to generate [knusbaum.org](https://knusbaum.org).
 
 # Usage
 Create the following directory structure:
@@ -30,4 +31,3 @@ Posts should contain markdown files that represent published posts.
 The filename should be publish data, followed by an underscore, followed the slug you want to use for the posts, with hypens for spaces, i.e. <date>_<slug>.md.
 For example, if you wanted a draft located at http://myblog/posts/my-great-draft published on 2024-02-02, then the filename should be 2024-02-02_my-great-post.md.
 The first line of the markdown file will be used as the title of the post.
-
