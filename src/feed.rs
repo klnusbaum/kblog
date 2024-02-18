@@ -1,4 +1,4 @@
-use crate::document::Post;
+use crate::document::RenderedPost;
 use anyhow::Result;
 use atom_syndication::{
     Entry, EntryBuilder, Feed, FeedBuilder, FixedDateTime, Link, LinkBuilder, Person,
@@ -44,12 +44,12 @@ impl FeedCreator {
         }
     }
 
-    pub fn render_feed(&self, posts: &[Post]) -> Result<()> {
+    pub fn render_feed(&self, posts: &[RenderedPost]) -> Result<()> {
         let feed = self.create_feed(&posts);
         self.write_feed(&feed)
     }
 
-    fn create_feed(&self, posts: &[Post]) -> Feed {
+    fn create_feed(&self, posts: &[RenderedPost]) -> Feed {
         let entries = self.create_entries(&posts);
         let latest_update = entries.latest_update(self.now);
 
@@ -93,15 +93,15 @@ impl FeedCreator {
         vec![self_link, alt_link]
     }
 
-    fn create_entries(&self, posts: &[Post]) -> Vec<Entry> {
+    fn create_entries(&self, posts: &[RenderedPost]) -> Vec<Entry> {
         posts.iter().map(|p| self.create_entry(p)).collect()
     }
 
-    fn create_entry(&self, post: &Post) -> Entry {
+    fn create_entry(&self, post: &RenderedPost) -> Entry {
         EntryBuilder::default()
             .id(self.entry_id(post))
             .title(plain_text(&post.title))
-            .summary(plain_text(&post.summary_markdown))
+            .summary(plain_text(&post.summary))
             .published(post.date)
             .updated(post.date)
             .link(self.entry_link(post))
@@ -109,7 +109,7 @@ impl FeedCreator {
             .build()
     }
 
-    fn entry_id(&self, post: &Post) -> String {
+    fn entry_id(&self, post: &RenderedPost) -> String {
         format!(
             "tag:{},{}:{}",
             self.domain,
@@ -118,7 +118,7 @@ impl FeedCreator {
         )
     }
 
-    fn entry_link(&self, post: &Post) -> Link {
+    fn entry_link(&self, post: &RenderedPost) -> Link {
         LinkBuilder::default()
             .href(format!("https://{}/posts/{}", self.domain, post.id))
             .rel("alternate")
