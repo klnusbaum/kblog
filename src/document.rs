@@ -3,41 +3,52 @@ use chrono::prelude::*;
 use std::fs;
 use std::path::Path;
 
-pub struct Post {
+pub struct RenderedPost {
     pub id: String,
     pub title: String,
     pub date: DateTime<FixedOffset>,
-    pub summary_markdown: String,
+    pub summary: String,
+    pub html: String,
+}
+
+pub struct RawPost {
+    pub id: String,
+    pub title: String,
+    pub date: DateTime<FixedOffset>,
     pub full_markdown: String,
 }
 
-impl Post {
-    pub fn new(path: &Path) -> Result<Post> {
+impl RawPost {
+    pub fn new(path: &Path) -> Result<RawPost> {
         let (id, date) = id_and_date(path)?;
         let (title, full_markdown) = title_and_markdown(path)?;
-        let summary_markdown = summary_from_full(&full_markdown, path)?;
 
-        Ok(Post {
+        Ok(RawPost {
             id,
             title,
             date,
-            summary_markdown,
             full_markdown,
         })
     }
 }
 
-pub struct Draft {
+pub struct RenderedDraft {
+    pub id: String,
+    pub title: String,
+    pub html: String,
+}
+
+pub struct RawDraft {
     pub id: String,
     pub title: String,
     pub markdown: String,
 }
 
-impl Draft {
-    pub fn new(path: &Path) -> Result<Draft> {
+impl RawDraft {
+    pub fn new(path: &Path) -> Result<RawDraft> {
         let id = file_name(path)?.to_string();
         let (title, markdown) = title_and_markdown(path)?;
-        Ok(Draft {
+        Ok(RawDraft {
             id,
             title,
             markdown,
@@ -71,12 +82,6 @@ fn title_and_markdown(path: &Path) -> Result<(String, String)> {
     Ok((title.to_string(), markdown.to_string()))
 }
 
-fn summary_from_full(markdown: &str, path: &Path) -> Result<String> {
-    let mut parts = markdown.split("\n\n");
-    let summary = parts.next().ok_or(missing_summary(path))?;
-    Ok(summary.to_string())
-}
-
 fn file_name<'a>(path: &'a Path) -> Result<&'a str> {
     Ok(path
         .file_name()
@@ -108,8 +113,4 @@ fn missing_title(path: &Path) -> Error {
 
 fn missing_markdown(path: &Path) -> Error {
     anyhow!("post missing markdown {}", path.display())
-}
-
-fn missing_summary(path: &Path) -> Error {
-    anyhow!("couldn't parse summary from {}", path.display())
 }
