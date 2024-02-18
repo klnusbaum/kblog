@@ -202,7 +202,7 @@ impl Renderer {
             .replace(templates::TOKEN_YEAR, &self.year)
             .replace(templates::TOKEN_ANALYTICS_TAG, &self.analytics_tag)
             .replace(templates::TOKEN_URL, url)
-            .replace(templates::TOKEN_OG_TYPE, og_type.as_ref());
+            .replace(templates::TOKEN_OG_TYPE, og_type);
         Ok(fs::write(path, &rendered_page)?)
     }
 
