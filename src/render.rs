@@ -125,7 +125,7 @@ impl Renderer {
     }
 
     fn render_post(&self, post: &Post) -> Result<()> {
-        let html = self.markdowner.to_html(&post.markdown)?;
+        let html = self.markdowner.to_html(&post.full_markdown)?;
         let formatted_date = format!("{}", &post.date.format("%Y-%m-%d"));
         let rendered_post = templates::POST_TEMPLATE
             .replace(templates::TOKEN_TITLE, &post.title)
