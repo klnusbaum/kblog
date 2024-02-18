@@ -178,7 +178,7 @@ impl Renderer {
             &self.out_dir.join("index.html"),
             &self.blog_name,
             &index,
-            format!("https://{}/", &self.domain).as_str(),
+            &format!("https://{}/", &self.domain),
             OG_TYPE_WEBSITE,
         )
     }
