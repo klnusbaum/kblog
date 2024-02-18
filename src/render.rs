@@ -65,15 +65,11 @@ impl Renderer {
     }
 
     pub fn render(&self) -> Result<()> {
-        self.reset_out_dir()?;
         let posts = self.render_posts()?;
         let drafts = self.render_drafts()?;
-        for post in &posts {
-            self.output_post(&post)?;
-        }
-        for draft in &drafts {
-            self.output_draft(&draft)?;
-        }
+        self.reset_out_dir()?;
+        self.output_posts(&posts)?;
+        self.output_drafts(&drafts)?;
         self.output_index(&posts)?;
         self.output_feed(&posts)?;
         self.output_css()?;
@@ -93,8 +89,6 @@ impl Renderer {
             bail!(missing_posts_dir(&self.posts_in_dir))
         }
 
-        fs::create_dir(&self.posts_out_dir)?;
-
         let mut posts: Vec<RenderedPost> = self
             .posts_in_dir
             .read_dir()?
@@ -112,20 +106,6 @@ impl Renderer {
         }
     }
 
-    fn render_drafts(&self) -> Result<Vec<RenderedDraft>> {
-        if !self.drafts_in_dir.exists() {
-            return Ok(vec![]);
-        }
-
-        fs::create_dir(&self.drafts_out_dir)?;
-
-        self.drafts_in_dir
-            .read_dir()?
-            .map(|entry| RawDraft::new(&entry?.path()))
-            .map(|raw_post| self.render_draft(raw_post?))
-            .collect::<Result<Vec<RenderedDraft>>>()
-    }
-
     fn render_post(&self, post: RawPost) -> Result<RenderedPost> {
         let html = self.markdowner.to_html(&post.full_markdown)?;
         let summary = extract_summary(&html, &post.id)?;
@@ -136,6 +116,16 @@ impl Renderer {
             summary,
             html,
         })
+    }
+
+    fn output_posts(&self, posts: &[RenderedPost]) -> Result<()> {
+        fs::create_dir(&self.posts_out_dir)?;
+
+        for post in posts {
+            self.output_post(&post)?;
+        }
+
+        Ok(())
     }
 
     fn output_post(&self, post: &RenderedPost) -> Result<()> {
@@ -155,6 +145,18 @@ impl Renderer {
         )
     }
 
+    fn render_drafts(&self) -> Result<Vec<RenderedDraft>> {
+        if !self.drafts_in_dir.exists() {
+            return Ok(vec![]);
+        }
+
+        self.drafts_in_dir
+            .read_dir()?
+            .map(|entry| RawDraft::new(&entry?.path()))
+            .map(|raw_post| self.render_draft(raw_post?))
+            .collect::<Result<Vec<RenderedDraft>>>()
+    }
+
     fn render_draft(&self, draft: RawDraft) -> Result<RenderedDraft> {
         let html = self.markdowner.to_html(&draft.markdown)?;
         Ok(RenderedDraft {
@@ -162,6 +164,15 @@ impl Renderer {
             title: draft.title,
             html,
         })
+    }
+
+    fn output_drafts(&self, drafts: &[RenderedDraft]) -> Result<()> {
+        fs::create_dir(&self.drafts_out_dir)?;
+
+        for draft in drafts {
+            self.output_draft(&draft)?;
+        }
+        Ok(())
     }
 
     fn output_draft(&self, draft: &RenderedDraft) -> Result<()> {
