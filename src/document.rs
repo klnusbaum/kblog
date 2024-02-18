@@ -15,19 +15,19 @@ pub struct RawPost {
     pub id: String,
     pub title: String,
     pub date: DateTime<FixedOffset>,
-    pub full_markdown: String,
+    pub markdown: String,
 }
 
 impl RawPost {
     pub fn new(path: &Path) -> Result<RawPost> {
         let (id, date) = id_and_date(path)?;
-        let (title, full_markdown) = title_and_markdown(path)?;
+        let (title, markdown) = title_and_markdown(path)?;
 
         Ok(RawPost {
             id,
             title,
             date,
-            full_markdown,
+            markdown,
         })
     }
 }

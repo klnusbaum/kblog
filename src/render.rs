@@ -107,7 +107,7 @@ impl Renderer {
     }
 
     fn render_post(&self, post: RawPost) -> Result<RenderedPost> {
-        let html = self.markdowner.to_html(&post.full_markdown)?;
+        let html = self.markdowner.to_html(&post.markdown)?;
         let summary = extract_summary(&html, &post.id)?;
         Ok(RenderedPost {
             id: post.id,
