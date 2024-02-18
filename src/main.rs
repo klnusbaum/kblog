@@ -39,8 +39,8 @@ fn main() -> Result<()> {
     let syntax_set = SyntaxSet::load_defaults_newlines();
     let md = Markdowner::new(syntax_set);
     let theme_set = ThemeSet::load_defaults();
-    let css_creator = CSSCreator::new(theme_set, &args.out_dir);
     let config = Config::from_toml(args.config)?;
+    let css_creator = CSSCreator::new(&args.out_dir, config.themes.clone(), theme_set);
     let feed_creator = FeedCreator::new(
         &args.out_dir,
         now,

@@ -11,28 +11,27 @@ body {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background: #333;
-        color: white;
+        background: {{dark_background_color}};
+        color: {{dark_text_color}};
     }
-
     a {
-        color: #B3C0A4;
+        color: {{dark_link_color}};
     }
     footer {
-        color: #666;
+        color: {{dark_footer_color}};
     }
 }
 
 @media (prefers-color-scheme: light) {
     body {
-        background: white;
-        color: #555;
+        background: {{light_background_color}};
+        color: {{light_text_color}};
     }
     a {
-        color: #073B4C;
+        color: {{light_link_color}};
     }
     footer {
-        color: #666;
+        color: {{light_footer_color}};
     }
 }
 

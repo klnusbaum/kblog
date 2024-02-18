@@ -9,6 +9,21 @@ pub struct Config {
     pub blog_name: String,
     pub blog_subtitle: String,
     pub author: String,
+    pub themes: Themes,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Themes {
+    pub light: Theme,
+    pub dark: Theme,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Theme {
+    pub background_color: String,
+    pub text_color: String,
+    pub link_color: String,
+    pub footer_color: String,
 }
 
 impl Config {
