@@ -18,6 +18,9 @@ body {
     a {
         color: #B3C0A4;
     }
+    footer {
+        color: #666;
+    }
 }
 
 @media (prefers-color-scheme: light) {
@@ -27,6 +30,9 @@ body {
     }
     a {
         color: #073B4C;
+    }
+    footer {
+        color: #666;
     }
 }
 
@@ -51,7 +57,6 @@ hr {
 }
 
 footer {
-    color: #666;
     padding-bottom: 1em;
 }
 
