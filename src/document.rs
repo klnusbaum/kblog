@@ -7,22 +7,22 @@ pub struct Post {
     pub id: String,
     pub title: String,
     pub date: DateTime<FixedOffset>,
-    pub summary: String,
-    pub markdown: String,
+    pub summary_markdown: String,
+    pub full_markdown: String,
 }
 
 impl Post {
     pub fn new(path: &Path) -> Result<Post> {
         let (id, date) = id_and_date(path)?;
-        let (title, markdown) = title_and_markdown(path)?;
-        let summary = summary_from_markdown(&markdown, path)?;
+        let (title, full_markdown) = title_and_markdown(path)?;
+        let summary_markdown = summary_from_full(&full_markdown, path)?;
 
         Ok(Post {
             id,
             title,
             date,
-            summary,
-            markdown,
+            summary_markdown,
+            full_markdown,
         })
     }
 }
@@ -71,7 +71,7 @@ fn title_and_markdown(path: &Path) -> Result<(String, String)> {
     Ok((title.to_string(), markdown.to_string()))
 }
 
-fn summary_from_markdown(markdown: &str, path: &Path) -> Result<String> {
+fn summary_from_full(markdown: &str, path: &Path) -> Result<String> {
     let mut parts = markdown.split("\n\n");
     let summary = parts.next().ok_or(missing_summary(path))?;
     Ok(summary.to_string())

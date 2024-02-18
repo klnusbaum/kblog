@@ -101,7 +101,7 @@ impl FeedCreator {
         EntryBuilder::default()
             .id(self.entry_id(post))
             .title(plain_text(&post.title))
-            .summary(plain_text(&post.summary))
+            .summary(plain_text(&post.summary_markdown))
             .published(post.date)
             .updated(post.date)
             .link(self.entry_link(post))
