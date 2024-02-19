@@ -42,7 +42,7 @@ fn main() -> Result<()> {
     let syntax_set = SyntaxSet::load_defaults_newlines();
     let md = Markdowner::new(syntax_set);
     let theme_set = ThemeSet::load_defaults();
-    let config = Config::from_toml(PathBuf::from(CONFIG_FILE_NAME))?;
+    let config = Config::from_toml(CONFIG_FILE_NAME)?;
     let css_creator = CSSCreator::new(DEFAULT_OUT_DIR, config.themes.clone(), theme_set);
     let feed_creator = FeedCreator::new(
         DEFAULT_OUT_DIR,
@@ -53,8 +53,8 @@ fn main() -> Result<()> {
         config.author.clone(),
     );
     let renderer = Renderer::new(
-        PathBuf::from(DEFAULT_IN_DIR),
-        PathBuf::from(DEFAULT_OUT_DIR),
+        DEFAULT_IN_DIR,
+        DEFAULT_OUT_DIR,
         md,
         css_creator,
         feed_creator,

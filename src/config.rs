@@ -1,7 +1,7 @@
 use anyhow::Result;
 use serde::Deserialize;
 use std::fs;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Deserialize)]
 pub struct Config {
@@ -27,7 +27,7 @@ pub struct Theme {
 }
 
 impl Config {
-    pub fn from_toml(file: PathBuf) -> Result<Config> {
+    pub fn from_toml<P: AsRef<Path>>(file: P) -> Result<Config> {
         let content = fs::read_to_string(file)?;
         Ok(toml::from_str(&content)?)
     }

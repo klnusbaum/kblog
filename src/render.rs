@@ -29,9 +29,9 @@ pub struct Renderer {
 }
 
 impl Renderer {
-    pub fn new(
-        in_dir: PathBuf,
-        out_dir: PathBuf,
+    pub fn new<P>(
+        in_dir: P,
+        out_dir: P,
         markdowner: Markdowner,
         css_creator: CSSCreator,
         feed_creator: FeedCreator,
@@ -41,11 +41,15 @@ impl Renderer {
         author: String,
         year: String,
         analytics_tag: String,
-    ) -> Renderer {
-        let posts_in_dir = in_dir.join("posts");
-        let drafts_in_dir = in_dir.join("drafts");
-        let posts_out_dir = out_dir.join("posts");
-        let drafts_out_dir = out_dir.join("drafts");
+    ) -> Renderer
+    where
+        P: AsRef<Path>,
+    {
+        let posts_in_dir = in_dir.as_ref().join("posts");
+        let drafts_in_dir = in_dir.as_ref().join("drafts");
+        let posts_out_dir = out_dir.as_ref().join("posts");
+        let drafts_out_dir = out_dir.as_ref().join("drafts");
+        let out_dir = out_dir.as_ref().to_path_buf();
         Renderer {
             posts_in_dir,
             drafts_in_dir,
