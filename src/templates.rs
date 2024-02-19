@@ -10,6 +10,7 @@ pub const TOKEN_ANALYTICS_TAG: &'static str = "{{analytics_tag}}";
 pub const TOKEN_RSS_FEED: &'static str = "{{feed_file}}";
 pub const TOKEN_YEAR: &'static str = "{{year}}";
 pub const TOKEN_URL: &'static str = "{{url}}";
+pub const TOKEN_OG_DESCRIPTION: &'static str = "{{og_description}}";
 pub const TOKEN_OG_TYPE: &'static str = "{{og_type}}";
 pub const TOKEN_AUTHOR: &'static str = "{{author}}";
 pub const TOKEN_BLOG_SUBTITLE: &'static str = "{{blog_subtitle}}";
@@ -24,6 +25,7 @@ pub const PAGE_TEMPLATE: &'static str = r#"<!DOCTYPE html>
 <meta property="og:type" content="{{og_type}}">
 <meta property="og:url" content="{{url}}">
 <meta property="og:site_name" content="{{blog_name}}">
+<meta property="og:description" content="{{og_description}}">
 
 <link href="/{{feed_file}}" type="application/atom+xml" rel="alternate" title="Sitewide Atom feed" />
 <title>{{title}}</title>
