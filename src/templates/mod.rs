@@ -1,0 +1,21 @@
+pub const TOKEN_DOMAIN: &'static str = "{{domain}}";
+pub const TOKEN_BLOG_NAME: &'static str = "{{blog_name}}";
+pub const TOKEN_STYLES: &'static str = "{{style}}";
+pub const TOKEN_BODY: &'static str = "{{body}}";
+pub const TOKEN_TITLE: &'static str = "{{title}}";
+pub const TOKEN_DATE: &'static str = "{{date}}";
+pub const TOKEN_CONTENT: &'static str = "{{content}}";
+pub const TOKEN_POST_LIST: &'static str = "{{post_list}}";
+pub const TOKEN_ANALYTICS_TAG: &'static str = "{{analytics_tag}}";
+pub const TOKEN_RSS_FEED: &'static str = "{{feed_file}}";
+pub const TOKEN_YEAR: &'static str = "{{year}}";
+pub const TOKEN_URL: &'static str = "{{url}}";
+pub const TOKEN_OG_DESCRIPTION: &'static str = "{{og_description}}";
+pub const TOKEN_OG_TYPE: &'static str = "{{og_type}}";
+pub const TOKEN_AUTHOR: &'static str = "{{author}}";
+pub const TOKEN_BLOG_SUBTITLE: &'static str = "{{blog_subtitle}}";
+
+pub const PAGE_TEMPLATE: &'static str = include_str!("base.html");
+pub const POST_TEMPLATE: &str = include_str!("post.html");
+pub const DRAFT_TEMPLATE: &str = include_str!("draft.html");
+pub const INDEX_TEMPLATE: &str = include_str!("index.html");
