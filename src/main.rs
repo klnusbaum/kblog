@@ -19,30 +19,33 @@ use std::path::PathBuf;
 use syntect::highlighting::ThemeSet;
 use syntect::parsing::SyntaxSet;
 
+const DEFAULT_IN_DIR: &'static str = "content";
+const DEFAULT_OUT_DIR: &'static str = "gen";
+const CONFIG_FILE_NAME: &'static str = "config.toml";
+
 #[derive(Parser, Debug)]
 #[command(author, version, about)]
 struct Args {
-    #[arg(short, long, value_name = "DIR", default_value = "content")]
-    in_dir: PathBuf,
-
-    #[arg(short, long, value_name = "DIR", default_value = "gen")]
-    out_dir: PathBuf,
-
-    #[arg(short, long, value_name = "FILE", default_value = "config.toml")]
-    config: PathBuf,
+    /// Optional directory from which the program should run.
+    #[arg(short = 'C', value_name = "DIR")]
+    working_directory: Option<PathBuf>,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
+    if let Some(dir) = args.working_directory {
+        env::set_current_dir(dir)?
+    };
+
     let now = Utc::now();
     let year = format!("{}", now.year());
     let syntax_set = SyntaxSet::load_defaults_newlines();
     let md = Markdowner::new(syntax_set);
     let theme_set = ThemeSet::load_defaults();
-    let config = Config::from_toml(args.config)?;
-    let css_creator = CSSCreator::new(&args.out_dir, config.themes.clone(), theme_set);
+    let config = Config::from_toml(PathBuf::from(CONFIG_FILE_NAME))?;
+    let css_creator = CSSCreator::new(DEFAULT_OUT_DIR, config.themes.clone(), theme_set);
     let feed_creator = FeedCreator::new(
-        &args.out_dir,
+        DEFAULT_OUT_DIR,
         now,
         config.domain.clone(),
         config.blog_name.clone(),
@@ -50,8 +53,8 @@ fn main() -> Result<()> {
         config.author.clone(),
     );
     let renderer = Renderer::new(
-        args.in_dir,
-        args.out_dir,
+        PathBuf::from(DEFAULT_IN_DIR),
+        PathBuf::from(DEFAULT_OUT_DIR),
         md,
         css_creator,
         feed_creator,
@@ -62,6 +65,7 @@ fn main() -> Result<()> {
         year,
         env_or_default("ANALYTICS_TAG", "dev_tag"),
     );
+
     renderer.render().map_err(|e| {
         eprintln!("{}", e);
         e
