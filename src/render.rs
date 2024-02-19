@@ -1,3 +1,4 @@
+use crate::config::Metadata;
 use crate::css::CSSCreator;
 use crate::document::{RawDraft, RawPost, RenderedDraft, RenderedPost};
 use crate::feed::FeedCreator;
@@ -20,10 +21,7 @@ pub struct Renderer {
     markdowner: Markdowner,
     css_creator: CSSCreator,
     feed_creator: FeedCreator,
-    domain: String,
-    blog_name: String,
-    blog_subtitle: String,
-    author: String,
+    metadata: Metadata,
     year: String,
     analytics_tag: String,
 }
@@ -35,10 +33,7 @@ impl Renderer {
         markdowner: Markdowner,
         css_creator: CSSCreator,
         feed_creator: FeedCreator,
-        domain: String,
-        blog_name: String,
-        blog_subtitle: String,
-        author: String,
+        metadata: Metadata,
         year: String,
         analytics_tag: String,
     ) -> Renderer
@@ -59,10 +54,7 @@ impl Renderer {
             markdowner,
             css_creator,
             feed_creator,
-            domain,
-            blog_name,
-            blog_subtitle,
-            author,
+            metadata,
             year,
             analytics_tag,
         }
@@ -212,14 +204,14 @@ impl Renderer {
             .collect();
         let index = templates::INDEX_TEMPLATE
             .replace(templates::TOKEN_POST_LIST, &list)
-            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name)
-            .replace(templates::TOKEN_BLOG_SUBTITLE, &self.blog_subtitle);
+            .replace(templates::TOKEN_BLOG_NAME, &self.metadata.blog_name)
+            .replace(templates::TOKEN_BLOG_SUBTITLE, &self.metadata.blog_subtitle);
         self.render_page(
             &self.out_dir.join("index.html"),
-            &self.blog_name,
+            &self.metadata.blog_name,
             &index,
-            &format!("https://{}/", &self.domain),
-            &self.blog_subtitle,
+            &format!("https://{}/", &self.metadata.domain),
+            &self.metadata.blog_subtitle,
             OG_TYPE_WEBSITE,
         )
     }
@@ -234,9 +226,9 @@ impl Renderer {
         og_type: &str,
     ) -> Result<()> {
         let rendered_page = templates::PAGE_TEMPLATE
-            .replace(templates::TOKEN_AUTHOR, &self.author)
-            .replace(templates::TOKEN_DOMAIN, &self.domain)
-            .replace(templates::TOKEN_BLOG_NAME, &self.blog_name)
+            .replace(templates::TOKEN_AUTHOR, &self.metadata.author)
+            .replace(templates::TOKEN_DOMAIN, &self.metadata.domain)
+            .replace(templates::TOKEN_BLOG_NAME, &self.metadata.blog_name)
             .replace(templates::TOKEN_STYLES, css::STYLE_FILE)
             .replace(templates::TOKEN_RSS_FEED, feed::FEED_FILE)
             .replace(templates::TOKEN_TITLE, title)
@@ -258,7 +250,7 @@ impl Renderer {
     }
 
     fn to_og_url(&self, path: &str) -> Result<String> {
-        Ok(format!("https://{}/{}", self.domain, path))
+        Ok(format!("https://{}/{}", self.metadata.domain, path))
     }
 }
 

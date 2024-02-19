@@ -44,24 +44,14 @@ fn main() -> Result<()> {
     let theme_set = ThemeSet::load_defaults();
     let config = Config::from_toml(CONFIG_FILE_NAME)?;
     let css_creator = CSSCreator::new(DEFAULT_OUT_DIR, config.themes.clone(), theme_set);
-    let feed_creator = FeedCreator::new(
-        DEFAULT_OUT_DIR,
-        now,
-        config.domain.clone(),
-        config.blog_name.clone(),
-        config.blog_subtitle.clone(),
-        config.author.clone(),
-    );
+    let feed_creator = FeedCreator::new(DEFAULT_OUT_DIR, now, config.metadata.clone());
     let renderer = Renderer::new(
         DEFAULT_IN_DIR,
         DEFAULT_OUT_DIR,
         md,
         css_creator,
         feed_creator,
-        config.domain.clone(),
-        config.blog_name.clone(),
-        config.blog_subtitle.clone(),
-        config.author,
+        config.metadata.clone(),
         year,
         env_or_default("ANALYTICS_TAG", "dev_tag"),
     );

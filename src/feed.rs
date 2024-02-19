@@ -1,3 +1,4 @@
+use crate::config::Metadata;
 use crate::document::RenderedPost;
 use anyhow::Result;
 use atom_syndication::{
@@ -13,21 +14,11 @@ pub const FEED_FILE: &'static str = "atom.xml";
 pub struct FeedCreator {
     feed_file: PathBuf,
     now: FixedDateTime,
-    domain: String,
-    blog_name: String,
-    blog_subtitle: String,
-    author: String,
+    metadata: Metadata,
 }
 
 impl FeedCreator {
-    pub fn new<P, D>(
-        out_dir: P,
-        now: D,
-        domain: String,
-        blog_name: String,
-        blog_subtitle: String,
-        author: String,
-    ) -> FeedCreator
+    pub fn new<P, D>(out_dir: P, now: D, metadata: Metadata) -> FeedCreator
     where
         P: AsRef<Path>,
         D: Into<FixedDateTime>,
@@ -37,10 +28,7 @@ impl FeedCreator {
         FeedCreator {
             feed_file,
             now,
-            domain,
-            blog_name,
-            blog_subtitle,
-            author,
+            metadata,
         }
     }
 
@@ -54,7 +42,7 @@ impl FeedCreator {
         let latest_update = entries.latest_update(self.now);
 
         FeedBuilder::default()
-            .id(format!("tag:{}", self.domain))
+            .id(format!("tag:{}", self.metadata.domain))
             .title(self.feed_title())
             .subtitle(self.feed_subtitle())
             .updated(latest_update)
@@ -72,21 +60,21 @@ impl FeedCreator {
     }
 
     fn feed_title(&self) -> Text {
-        plain_text(&self.blog_name)
+        plain_text(&self.metadata.blog_name)
     }
 
     fn feed_subtitle(&self) -> Text {
-        plain_text(&self.blog_subtitle)
+        plain_text(&self.metadata.blog_subtitle)
     }
 
     fn feed_links(&self) -> Vec<Link> {
         let self_link = LinkBuilder::default()
-            .href(format!("https://{}/{}", &self.domain, FEED_FILE))
+            .href(format!("https://{}/{}", &self.metadata.domain, FEED_FILE))
             .rel("self")
             .mime_type("application/atom+xml".to_string())
             .build();
         let alt_link = LinkBuilder::default()
-            .href(format!("https://{}/", self.domain))
+            .href(format!("https://{}/", self.metadata.domain))
             .rel("alternate")
             .mime_type("text/html".to_string())
             .build();
@@ -112,7 +100,7 @@ impl FeedCreator {
     fn entry_id(&self, post: &RenderedPost) -> String {
         format!(
             "tag:{},{}:{}",
-            self.domain,
+            self.metadata.domain,
             post.date.format("%Y-%m-%d"),
             post.id
         )
@@ -120,20 +108,23 @@ impl FeedCreator {
 
     fn entry_link(&self, post: &RenderedPost) -> Link {
         LinkBuilder::default()
-            .href(format!("https://{}/posts/{}", self.domain, post.id))
+            .href(format!(
+                "https://{}/posts/{}",
+                self.metadata.domain, post.id
+            ))
             .rel("alternate")
             .mime_type("text/html".to_string())
             .build()
     }
 
     fn rights(&self) -> Text {
-        plain_text(&format!("© {} {}", self.now.year(), self.author))
+        plain_text(&format!("© {} {}", self.now.year(), self.metadata.author))
     }
 
     fn author(&self) -> Person {
         PersonBuilder::default()
-            .name(&self.author)
-            .uri(format!("https://{}/", self.domain))
+            .name(&self.metadata.author)
+            .uri(format!("https://{}/", self.metadata.domain))
             .build()
     }
 }

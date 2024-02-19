@@ -5,11 +5,16 @@ use std::path::Path;
 
 #[derive(Deserialize)]
 pub struct Config {
+    pub metadata: Metadata,
+    pub themes: Themes,
+}
+
+#[derive(Deserialize, Clone)]
+pub struct Metadata {
     pub domain: String,
     pub blog_name: String,
     pub blog_subtitle: String,
     pub author: String,
-    pub themes: Themes,
 }
 
 #[derive(Deserialize, Clone)]
