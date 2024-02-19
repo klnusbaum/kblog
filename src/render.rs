@@ -141,6 +141,7 @@ impl Renderer {
             &post.title,
             &full_html,
             &self.to_og_url(&format!("posts/{}", post.id))?,
+            &post.summary,
             OG_TYPE_ARTICLE,
         )
     }
@@ -186,6 +187,7 @@ impl Renderer {
             &draft.title,
             &full_html,
             &format!("drafts/{}", draft.id),
+            "",
             OG_TYPE_ARTICLE,
         )
     }
@@ -211,6 +213,7 @@ impl Renderer {
             &self.blog_name,
             &index,
             &format!("https://{}/", &self.domain),
+            &self.blog_subtitle,
             OG_TYPE_WEBSITE,
         )
     }
@@ -221,6 +224,7 @@ impl Renderer {
         title: &str,
         body: &str,
         url: &str,
+        og_description: &str,
         og_type: &str,
     ) -> Result<()> {
         let rendered_page = templates::PAGE_TEMPLATE
@@ -234,6 +238,7 @@ impl Renderer {
             .replace(templates::TOKEN_YEAR, &self.year)
             .replace(templates::TOKEN_ANALYTICS_TAG, &self.analytics_tag)
             .replace(templates::TOKEN_URL, url)
+            .replace(templates::TOKEN_OG_DESCRIPTION, og_description)
             .replace(templates::TOKEN_OG_TYPE, og_type);
         Ok(fs::write(path, &rendered_page)?)
     }
