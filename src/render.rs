@@ -4,7 +4,7 @@ use crate::document::{RawDraft, RawPost, RenderedDraft, RenderedPost};
 use crate::feed::FeedCreator;
 use crate::markdown::Markdowner;
 use crate::{css, feed, templates};
-use anyhow::{anyhow, bail, Error, Result};
+use anyhow::{anyhow, bail, Context, Error, Result};
 use std::cmp::Ordering;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -104,7 +104,8 @@ impl Renderer {
 
     fn render_post(&self, post: RawPost) -> Result<RenderedPost> {
         let html = self.markdowner.to_html(&post.markdown)?;
-        let summary = extract_summary(&html, &post.id)?;
+        let summary = extract_summary(&html)
+            .with_context(|| format!("Failed to extract summary for \"{}\"", post.title))?;
         Ok(RenderedPost {
             id: post.id,
             title: post.title,
@@ -254,10 +255,10 @@ impl Renderer {
     }
 }
 
-fn extract_summary(summary_html: &str, post_id: &str) -> Result<String> {
+fn extract_summary(summary_html: &str) -> Result<String> {
     match summary_html.split_once("</p>") {
         Some((first_p, _)) => Ok(strip_html(first_p)),
-        None => Err(missing_summary(post_id)),
+        None => Err(missing_summary()),
     }
 }
 
@@ -282,6 +283,6 @@ fn missing_posts_dir(path: &Path) -> Error {
     )
 }
 
-fn missing_summary(post_id: &str) -> Error {
-    anyhow!("error parsing summary for {}", post_id)
+fn missing_summary() -> Error {
+    anyhow!("no summary found")
 }
