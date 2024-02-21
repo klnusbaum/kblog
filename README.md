@@ -13,6 +13,8 @@ Create the following directory structure:
 ```
 and then simply run the `kblog` command. A full website will be generated in a directory called `gen`.
 
+Note the `-C` option allows you to specify the directory in which the `kblog` command should preform all work.
+
 ## Config
 The `config.toml` file should be a toml file with following content:
 ```
