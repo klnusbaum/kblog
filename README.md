@@ -1,4 +1,4 @@
-# kblog
+# KBlog
 A highly-opinionated static site generated for blogs written in Rust.
 Used to generate [knusbaum.org](https://knusbaum.org).
 
