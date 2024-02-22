@@ -12,5 +12,6 @@ straightforward as possible.
 ### Added
  
 ### Changed
+ - Upgraded Rust edition to 2021
  
 ### Fixed

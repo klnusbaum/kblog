@@ -2,7 +2,7 @@
 name = "kblog"
 version = "0.1.0"
 authors = ["Kurtis Nusbaum <kcommiter@gmail.com>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 pulldown-cmark = { version = "0.9", default-features = false, features = ["simd"] }
