@@ -15,3 +15,4 @@ straightforward as possible.
  - Upgraded Rust edition to 2021
  
 ### Fixed
+ - Remove newlines from post summaries (#11)
