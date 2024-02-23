@@ -256,10 +256,12 @@ impl Renderer {
 }
 
 fn extract_summary(summary_html: &str) -> Result<String> {
-    match summary_html.split_once("</p>") {
+    let raw_text = match summary_html.split_once("</p>") {
         Some((first_p, _)) => Ok(strip_html(first_p)),
         None => Err(missing_summary()),
-    }
+    }?;
+    let formatted = raw_text.replace("\n", " ");
+    Ok(formatted)
 }
 
 fn strip_html(html: &str) -> String {
