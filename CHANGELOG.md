@@ -13,6 +13,7 @@ straightforward as possible.
  
 ### Changed
  - Upgraded Rust edition to 2021
+ - Formatted html files
  
 ### Fixed
  - Remove newlines from post summaries (#11)
