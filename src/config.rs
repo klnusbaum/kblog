@@ -15,6 +15,7 @@ pub struct Metadata {
     pub blog_name: String,
     pub blog_subtitle: String,
     pub author: String,
+    pub github_url: String,
 }
 
 #[derive(Deserialize, Clone)]

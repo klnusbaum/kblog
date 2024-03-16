@@ -238,7 +238,8 @@ impl Renderer {
             .replace(templates::TOKEN_ANALYTICS_TAG, &self.analytics_tag)
             .replace(templates::TOKEN_URL, url)
             .replace(templates::TOKEN_OG_DESCRIPTION, og_description)
-            .replace(templates::TOKEN_OG_TYPE, og_type);
+            .replace(templates::TOKEN_OG_TYPE, og_type)
+            .replace(templates::TOKEN_GITHUB_URL, &self.metadata.github_url);
         Ok(fs::write(path, &rendered_page)?)
     }
 

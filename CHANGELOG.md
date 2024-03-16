@@ -17,3 +17,4 @@ straightforward as possible.
  
 ### Fixed
  - Remove newlines from post summaries (#11)
+ - Template out github url (#12)

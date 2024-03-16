@@ -14,6 +14,7 @@ pub const TOKEN_OG_DESCRIPTION: &'static str = "{{og_description}}";
 pub const TOKEN_OG_TYPE: &'static str = "{{og_type}}";
 pub const TOKEN_AUTHOR: &'static str = "{{author}}";
 pub const TOKEN_BLOG_SUBTITLE: &'static str = "{{blog_subtitle}}";
+pub const TOKEN_GITHUB_URL: &'static str = "{{github_url}}";
 
 pub const PAGE_TEMPLATE: &'static str = include_str!("base.html");
 pub const POST_TEMPLATE: &str = include_str!("post.html");
