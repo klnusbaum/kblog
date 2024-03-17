@@ -1,22 +1,43 @@
-pub const TOKEN_DOMAIN: &'static str = "{{domain}}";
-pub const TOKEN_BLOG_NAME: &'static str = "{{blog_name}}";
-pub const TOKEN_STYLES: &'static str = "{{style}}";
-pub const TOKEN_BODY: &'static str = "{{body}}";
-pub const TOKEN_TITLE: &'static str = "{{title}}";
-pub const TOKEN_DATE: &'static str = "{{date}}";
-pub const TOKEN_CONTENT: &'static str = "{{content}}";
-pub const TOKEN_POST_LIST: &'static str = "{{post_list}}";
-pub const TOKEN_ANALYTICS_TAG: &'static str = "{{analytics_tag}}";
-pub const TOKEN_RSS_FEED: &'static str = "{{feed_file}}";
-pub const TOKEN_YEAR: &'static str = "{{year}}";
-pub const TOKEN_URL: &'static str = "{{url}}";
-pub const TOKEN_OG_DESCRIPTION: &'static str = "{{og_description}}";
-pub const TOKEN_OG_TYPE: &'static str = "{{og_type}}";
-pub const TOKEN_AUTHOR: &'static str = "{{author}}";
-pub const TOKEN_BLOG_SUBTITLE: &'static str = "{{blog_subtitle}}";
-pub const TOKEN_GITHUB_URL: &'static str = "{{github_url}}";
+use askama::Template;
 
-pub const PAGE_TEMPLATE: &'static str = include_str!("base.html");
-pub const POST_TEMPLATE: &str = include_str!("post.html");
-pub const DRAFT_TEMPLATE: &str = include_str!("draft.html");
-pub const INDEX_TEMPLATE: &str = include_str!("index.html");
+use crate::document::RenderedPost;
+
+#[derive(Template)]
+#[template(path = "post.html")]
+pub struct PostTemplate<'a> {
+    pub title: &'a str,
+    pub date: &'a str,
+    pub content: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "draft.html")]
+pub struct DraftTemplate<'a> {
+    pub title: &'a str,
+    pub content: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "index.html")]
+pub struct IndexTemplate<'a> {
+    pub blog_name: &'a str,
+    pub blog_subtitle: &'a str,
+    pub posts: &'a [RenderedPost],
+}
+
+#[derive(Template)]
+#[template(path = "base.html")]
+pub struct PageTemplate<'a> {
+    pub title: &'a str,
+    pub og_type: &'a str,
+    pub url: &'a str,
+    pub blog_name: &'a str,
+    pub og_description: &'a str,
+    pub feed_file: &'a str,
+    pub style: &'a str,
+    pub body: &'a str,
+    pub github_url: &'a str,
+    pub year: &'a str,
+    pub author: &'a str,
+    pub analytics_tag: &'a str,
+}

@@ -5,8 +5,9 @@ use crate::feed::FeedCreator;
 use crate::markdown::Markdowner;
 use crate::{css, feed, templates};
 use anyhow::{anyhow, bail, Context, Error, Result};
+use askama::Template;
 use std::cmp::Ordering;
-use std::fs;
+use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 
 const OG_TYPE_ARTICLE: &'static str = "article";
@@ -127,10 +128,12 @@ impl Renderer {
 
     fn output_post(&self, post: &RenderedPost) -> Result<()> {
         let formatted_date = format!("{}", &post.date.format("%Y-%m-%d"));
-        let full_html = templates::POST_TEMPLATE
-            .replace(templates::TOKEN_TITLE, &post.title)
-            .replace(templates::TOKEN_DATE, &formatted_date)
-            .replace(templates::TOKEN_CONTENT, &post.html);
+        let full_html = templates::PostTemplate {
+            title: &post.title,
+            date: &formatted_date,
+            content: &post.html,
+        }
+        .render()?;
         let post_dir = self.posts_out_dir.join(&post.id);
         fs::create_dir(&post_dir)?;
         self.render_page(
@@ -176,9 +179,11 @@ impl Renderer {
     }
 
     fn output_draft(&self, draft: &RenderedDraft) -> Result<()> {
-        let full_html = templates::DRAFT_TEMPLATE
-            .replace(templates::TOKEN_TITLE, &draft.title)
-            .replace(templates::TOKEN_CONTENT, &draft.html);
+        let full_html = templates::DraftTemplate {
+            title: &draft.title,
+            content: &draft.html,
+        }
+        .render()?;
         let draft_dir = self.drafts_out_dir.join(&draft.id);
         fs::create_dir(&draft_dir)?;
         self.render_page(
@@ -192,21 +197,12 @@ impl Renderer {
     }
 
     fn output_index(&self, posts: &[RenderedPost]) -> Result<()> {
-        let list: String = posts
-            .iter()
-            .map(|post| {
-                format!(
-                    "<li>{} <a href=\"/posts/{}\">{}</a></li>\n",
-                    post.date.format("%Y-%m-%d"),
-                    post.id,
-                    post.title
-                )
-            })
-            .collect();
-        let index = templates::INDEX_TEMPLATE
-            .replace(templates::TOKEN_POST_LIST, &list)
-            .replace(templates::TOKEN_BLOG_NAME, &self.metadata.blog_name)
-            .replace(templates::TOKEN_BLOG_SUBTITLE, &self.metadata.blog_subtitle);
+        let index = templates::IndexTemplate {
+            blog_name: &self.metadata.blog_name,
+            blog_subtitle: &self.metadata.blog_subtitle,
+            posts,
+        }
+        .render()?;
         self.render_page(
             &self.out_dir.join("index.html"),
             &self.metadata.blog_name,
@@ -226,21 +222,23 @@ impl Renderer {
         og_description: &str,
         og_type: &str,
     ) -> Result<()> {
-        let rendered_page = templates::PAGE_TEMPLATE
-            .replace(templates::TOKEN_AUTHOR, &self.metadata.author)
-            .replace(templates::TOKEN_DOMAIN, &self.metadata.domain)
-            .replace(templates::TOKEN_BLOG_NAME, &self.metadata.blog_name)
-            .replace(templates::TOKEN_STYLES, css::STYLE_FILE)
-            .replace(templates::TOKEN_RSS_FEED, feed::FEED_FILE)
-            .replace(templates::TOKEN_TITLE, title)
-            .replace(templates::TOKEN_BODY, body)
-            .replace(templates::TOKEN_YEAR, &self.year)
-            .replace(templates::TOKEN_ANALYTICS_TAG, &self.analytics_tag)
-            .replace(templates::TOKEN_URL, url)
-            .replace(templates::TOKEN_OG_DESCRIPTION, og_description)
-            .replace(templates::TOKEN_OG_TYPE, og_type)
-            .replace(templates::TOKEN_GITHUB_URL, &self.metadata.github_url);
-        Ok(fs::write(path, &rendered_page)?)
+        let mut file = File::create(path)?;
+        templates::PageTemplate {
+            title,
+            og_type,
+            url,
+            blog_name: &self.metadata.blog_name,
+            og_description,
+            feed_file: feed::FEED_FILE,
+            style: css::STYLE_FILE,
+            body,
+            github_url: &self.metadata.github_url,
+            year: &self.year,
+            author: &self.metadata.author,
+            analytics_tag: &self.analytics_tag,
+        }
+        .write_into(&mut file)?;
+        Ok(())
     }
 
     fn output_css(&self) -> Result<()> {

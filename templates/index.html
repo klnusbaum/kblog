@@ -1,0 +1,12 @@
+<header>
+    <h1>{{ blog_name }}</h1>
+    <p>{{ blog_subtitle }}</p>
+</header>
+<br />
+<main>
+    <ul>
+        {%- for post in posts %}
+        <li>{{ post.date.format("%Y-%m-%d") }} <a href="/posts/{{ post.id }}">{{ post.title }}</a></li>
+        {%- endfor %}
+    </ul>
+</main>

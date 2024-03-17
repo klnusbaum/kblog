@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:type" content="{{ og_type }}">
+    <meta property="og:url" content="{{ url }}">
+    <meta property="og:site_name" content="{{ blog_name }}">
+    <meta property="og:description" content="{{ og_description }}">
+
+    <link href="/{{ feed_file }}" type="application/atom+xml" rel="alternate" title="Sitewide Atom feed" />
+    <title>{{ title }}</title>
+    <link rel="stylesheet" type="text/css" href="/{{ style }}" />
+</head>
+
+<body>
+    {{ body|safe }}
+    <hr>
+    <footer>
+        <a href="/">Home</a> | <a href="{{ github_url }}">GitHub</a> | <a href="/{{ feed_file }}">RSS</a><span
+            class="copyright">© {{ year }} {{ author }}</span>
+    </footer>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-0CMCYFYD3R"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '{{ analytics_tag }}');
+    </script>
+</body>
+
+</html>
