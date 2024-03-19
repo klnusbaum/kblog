@@ -1,6 +1,6 @@
 use askama::Template;
 
-use crate::document::RenderedPost;
+use crate::{config::Themes, document::RenderedPost};
 
 #[derive(Template)]
 #[template(path = "post.html")]
@@ -40,4 +40,10 @@ pub struct PageTemplate<'a> {
     pub year: &'a str,
     pub author: &'a str,
     pub analytics_tag: &'a str,
+}
+
+#[derive(Template)]
+#[template(path = "style.css", escape = "none")]
+pub struct StyleTemplate<'a> {
+    pub themes: &'a Themes,
 }

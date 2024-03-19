@@ -1,21 +1,14 @@
 use anyhow::Result;
+use askama::Template;
 use std::fs;
 use std::path::{Path, PathBuf};
 use syntect::highlighting::ThemeSet;
 use syntect::html::{css_for_theme_with_class_style, ClassStyle};
 
 use crate::config::Themes;
+use crate::templates;
 
 pub const STYLE_FILE: &'static str = "style.css";
-const STYLE_TEMPLATE: &'static str = include_str!("style.css");
-const TOKEN_LIGHT_BACKGROUND_COLOR: &'static str = "{{light_background_color}}";
-const TOKEN_LIGHT_TEXT_COLOR: &'static str = "{{light_text_color}}";
-const TOKEN_LIGHT_LINK_COLOR: &'static str = "{{light_link_color}}";
-const TOKEN_LIGHT_FOOTER_COLOR: &'static str = "{{light_footer_color}}";
-const TOKEN_DARK_BACKGROUND_COLOR: &'static str = "{{dark_background_color}}";
-const TOKEN_DARK_TEXT_COLOR: &'static str = "{{dark_text_color}}";
-const TOKEN_DARK_LINK_COLOR: &'static str = "{{dark_link_color}}";
-const TOKEN_DARK_FOOTER_COLOR: &'static str = "{{dark_footer_color}}";
 
 pub struct CSSCreator {
     out_dir: PathBuf,
@@ -45,25 +38,10 @@ impl CSSCreator {
     }
 
     fn write_main_style(&self) -> Result<()> {
-        let css = STYLE_TEMPLATE
-            .replace(
-                TOKEN_LIGHT_BACKGROUND_COLOR,
-                &self.main_themes.light.background_color,
-            )
-            .replace(TOKEN_LIGHT_TEXT_COLOR, &self.main_themes.light.text_color)
-            .replace(TOKEN_LIGHT_LINK_COLOR, &self.main_themes.light.link_color)
-            .replace(
-                TOKEN_LIGHT_FOOTER_COLOR,
-                &self.main_themes.light.footer_color,
-            )
-            .replace(
-                TOKEN_DARK_BACKGROUND_COLOR,
-                &self.main_themes.dark.background_color,
-            )
-            .replace(TOKEN_DARK_TEXT_COLOR, &self.main_themes.dark.text_color)
-            .replace(TOKEN_DARK_LINK_COLOR, &self.main_themes.dark.link_color)
-            .replace(TOKEN_DARK_FOOTER_COLOR, &self.main_themes.dark.footer_color);
-
+        let css = templates::StyleTemplate {
+            themes: &self.main_themes,
+        }
+        .render()?;
         self.write_css(STYLE_FILE, &css)
     }
 

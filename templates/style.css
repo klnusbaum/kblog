@@ -11,27 +11,27 @@ body {
 
 @media (prefers-color-scheme: dark) {
     body {
-        background: {{dark_background_color}};
-        color: {{dark_text_color}};
+        background: {{ themes.dark.background_color }};
+        color: {{ themes.dark.text_color }};
     }
     a {
-        color: {{dark_link_color}};
+        color: {{ themes.dark.link_color }};
     }
     footer {
-        color: {{dark_footer_color}};
+        color: {{ themes.dark.footer_color }};
     }
 }
 
 @media (prefers-color-scheme: light) {
     body {
-        background: {{light_background_color}};
-        color: {{light_text_color}};
+        background: {{ themes.dark.background_color }};
+        color: {{ themes.dark.text_color }};
     }
     a {
-        color: {{light_link_color}};
+        color: {{ themes.dark.link_color }};
     }
     footer {
-        color: {{light_footer_color}};
+        color: {{ themes.dark.footer_color }};
     }
 }
 
