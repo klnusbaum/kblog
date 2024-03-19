@@ -14,6 +14,8 @@ straightforward as possible.
 ### Changed
  - Upgraded Rust edition to 2021
  - Formatted html files
+ - Move to Askama for html templating (#8)
+ - Moved to Askama for CSS templating (#7)
  
 ### Fixed
  - Remove newlines from post summaries (#11)
