@@ -24,14 +24,14 @@ body {
 
 @media (prefers-color-scheme: light) {
     body {
-        background: {{ themes.dark.background_color }};
-        color: {{ themes.dark.text_color }};
+        background: {{ themes.light.background_color }};
+        color: {{ themes.light.text_color }};
     }
     a {
-        color: {{ themes.dark.link_color }};
+        color: {{ themes.light.link_color }};
     }
     footer {
-        color: {{ themes.dark.footer_color }};
+        color: {{ themes.light.footer_color }};
     }
 }
 

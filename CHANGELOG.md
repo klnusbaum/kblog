@@ -14,6 +14,7 @@ straightforward as possible.
 ### Changed
  
 ### Fixed
+ - Fixed light theme CSS (it was using dark colors)
  
 ## [0.2.0] - 2024-03-19
  
