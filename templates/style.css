@@ -59,6 +59,12 @@ footer {
     padding-bottom: 1em;
 }
 
+blockquote {
+  border-left: 10px solid;
+  padding-inline-start: 1.5em;
+  font-style: italic;
+}
+
 .footnote {
     font-size: 0.85em;
 }
