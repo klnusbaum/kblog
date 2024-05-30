@@ -232,7 +232,7 @@ impl Renderer {
             feed_file: feed::FEED_FILE,
             style: css::STYLE_FILE,
             body,
-            github_url: &self.metadata.github_url,
+            links: &self.metadata.links,
             year: &self.year,
             author: &self.metadata.author,
             analytics_tag: &self.analytics_tag,

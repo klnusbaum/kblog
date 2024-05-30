@@ -1,6 +1,7 @@
 use askama::Template;
 
-use crate::{config::Themes, document::RenderedPost};
+use crate::config::{Link, Themes};
+use crate::document::RenderedPost;
 
 #[derive(Template)]
 #[template(path = "post.html")]
@@ -36,7 +37,7 @@ pub struct PageTemplate<'a> {
     pub feed_file: &'a str,
     pub style: &'a str,
     pub body: &'a str,
-    pub github_url: &'a str,
+    pub links: &'a [Link],
     pub year: &'a str,
     pub author: &'a str,
     pub analytics_tag: &'a str,

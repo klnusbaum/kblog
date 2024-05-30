@@ -20,7 +20,7 @@
     {{ body|safe }}
     <hr>
     <footer>
-        <a href="/">Home</a> | <a href="{{ github_url }}">GitHub</a> | <a href="/{{ feed_file }}">RSS</a><span
+        <a href="/">Home</a> {% for link in links %}| <a href="{{link.url}}">{{link.name}}</a> {% endfor %}| <a href="/{{ feed_file }}">RSS</a><span
             class="copyright">© {{ year }} {{ author }}</span>
     </footer>
 

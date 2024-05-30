@@ -11,6 +11,7 @@ straightforward as possible.
  
 ### Added
  - Styling for Blockquotes
+ - Ability to list arbitrary links in the footer
  
 ### Changed
  
