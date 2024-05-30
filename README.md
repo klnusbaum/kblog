@@ -23,7 +23,10 @@ domain = <dns domain for the blog>
 blog_name = <name of the blog>
 blog_subtitle = <blog subtitle>
 author = <author name>
-github_url = <author's github url>
+links = [
+  {name = "GitHub", url = "https://github.com/<mygithub>"},
+  {name = "X", url = "https://twitter.com/<mytwitter>"},
+]
 
 [themes.light]
 background_color = <light_background_color>
