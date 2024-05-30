@@ -16,9 +16,11 @@ const OG_TYPE_WEBSITE: &'static str = "website";
 pub struct Renderer {
     posts_in_dir: PathBuf,
     drafts_in_dir: PathBuf,
+    imgs_in_dir: PathBuf,
     out_dir: PathBuf,
     posts_out_dir: PathBuf,
     drafts_out_dir: PathBuf,
+    imgs_out_dir: PathBuf,
     markdowner: Markdowner,
     css_creator: CSSCreator,
     feed_creator: FeedCreator,
@@ -43,15 +45,19 @@ impl Renderer {
     {
         let posts_in_dir = in_dir.as_ref().join("posts");
         let drafts_in_dir = in_dir.as_ref().join("drafts");
+        let imgs_in_dir = in_dir.as_ref().join("imgs");
         let posts_out_dir = out_dir.as_ref().join("posts");
         let drafts_out_dir = out_dir.as_ref().join("drafts");
+        let imgs_out_dir = out_dir.as_ref().join("imgs");
         let out_dir = out_dir.as_ref().to_path_buf();
         Renderer {
             posts_in_dir,
             drafts_in_dir,
+            imgs_in_dir,
             out_dir,
             posts_out_dir,
             drafts_out_dir,
+            imgs_out_dir,
             markdowner,
             css_creator,
             feed_creator,
@@ -67,6 +73,7 @@ impl Renderer {
         self.reset_out_dir()?;
         self.output_posts(&posts)?;
         self.output_drafts(&drafts)?;
+        self.output_imgs()?;
         self.output_index(&posts)?;
         self.output_feed(&posts)?;
         self.output_css()?;
@@ -194,6 +201,19 @@ impl Renderer {
             &format!("{} draft post", draft.title),
             OG_TYPE_ARTICLE,
         )
+    }
+
+    fn output_imgs(&self) -> Result<()> {
+        if !self.imgs_in_dir.exists() {
+            return Ok(());
+        }
+
+        fs::create_dir(&self.imgs_out_dir)?;
+        for entry in self.imgs_in_dir.read_dir()? {
+            let img = entry?;
+            fs::copy(img.path(), self.imgs_out_dir.join(img.file_name()))?;
+        }
+        Ok(())
     }
 
     fn output_index(&self, posts: &[RenderedPost]) -> Result<()> {

@@ -9,6 +9,7 @@ Create the following directory structure:
 ├─ content/
 │  ├─ posts/
 │  ├─ drafts/
+│  ├─ imgs/
 ├─ config.toml
 ```
 and then simply run the `kblog` command. A full website will be generated in a directory called `gen`.
@@ -52,3 +53,7 @@ The filename should be publish date, followed by an underscore, followed the slu
 For example, if you wanted a post located at http://myblog/posts/my-great-draft published on 2024-02-02, then the filename should be `2024-02-02_my-great-post.md`.
 The first line of the markdown file will be used as the title of the post.
 The first paragraph of the post will be used as a summary.
+
+## Images
+To include images in drafs/posts, simply put the desired image into the `imgs` directory.
+You can then include the image in your post by adding an `img` tag in your markdown, e.g. `<img src="/imgs/my_image_name.png"/>`.
