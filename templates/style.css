@@ -65,6 +65,11 @@ blockquote {
   font-style: italic;
 }
 
+img {
+    width: 100%;
+    height: auto;
+}
+
 .footnote {
     font-size: 0.85em;
 }
