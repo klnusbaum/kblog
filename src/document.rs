@@ -35,7 +35,6 @@ impl RawPost {
 pub struct RenderedDraft {
     pub id: String,
     pub title: String,
-    pub summary: String,
     pub html: String,
 }
 

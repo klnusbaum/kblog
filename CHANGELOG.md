@@ -18,6 +18,7 @@ straightforward as possible.
  
 ### Fixed
  - Fixed light theme CSS (it was using dark colors)
+ - removed unused summary field on the RenderedDraft struct
  
 ## [0.2.0] - 2024-03-19
  

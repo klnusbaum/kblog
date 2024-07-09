@@ -167,11 +167,9 @@ impl Renderer {
 
     fn render_draft(&self, draft: RawDraft) -> Result<RenderedDraft> {
         let html = self.markdowner.to_html(&draft.markdown)?;
-        let summary = format!("{} draft post", &draft.title);
         Ok(RenderedDraft {
             id: draft.id,
             title: draft.title,
-            summary,
             html,
         })
     }
